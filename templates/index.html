@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARC-Gen API Tool</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: auto; background-color: #f4f4f4; }
+        h1, h2 { color: #333; }
+        textarea { width: 98%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px; font-family: monospace; }
+        button { background-color: #5cb85c; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 1em; }
+        button:hover { background-color: #4cae4c; }
+        pre { background-color: #eee; border: 1px solid #ccc; padding: 15px; white-space: pre-wrap; /* Mantém quebras de linha */ word-wrap: break-word; /* Quebra palavras longas */ font-family: monospace; }
+        code { font-family: monospace; }
+        .flash-messages { list-style: none; padding: 0; margin-bottom: 15px; }
+        .flash-messages li { padding: 10px 15px; margin-bottom: 10px; border-radius: 4px; }
+        .flash-messages .error { background-color: #f2dede; color: #a94442; border: 1px solid #ebccd1; }
+        .flash-messages .warning { background-color: #fcf8e3; color: #8a6d3b; border: 1px solid #faebcc; }
+        .flash-messages .info { background-color: #d9edf7; color: #31708f; border: 1px solid #bce8f1; }
+        .form-container { background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px;}
+        .result-container { background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <h1>MARC-Gen API Tool</h1>
+    <p>Cole o texto da ficha catalográfica abaixo e clique em "Gerar MARC" para obter o registro MARC21 correspondente usando a API do Google Gemini.</p>
+
+    <!-- Área para exibir mensagens flash (erros, avisos) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-messages">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <div class="form-container">
+        <form action="/generate" method="post">
+            <label for="ficha_texto">Texto da Ficha Catalográfica:</label><br>
+            <textarea name="ficha_texto" id="ficha_texto" rows="15" required placeholder="Exemplo:
+
+Silva, João da.
+Introdução à Biblioteconomia / João da Silva. – 3. ed. – São Paulo : Editora Exemplo, 2023.
+150 p. : il. ; 21 cm.
+
+Inclui bibliografia e índice.
+ISBN 978-85-0000-000-0
+
+1. Biblioteconomia. 2. Catalogação. I. Título.">{{ ficha_texto }}</textarea><br>
+            <button type="submit">Gerar MARC</button>
+        </form>
+    </div>
+
+    {% if marc_result %}
+    <div class="result-container">
+        <h2>Resultado MARC21 Gerado:</h2>
+        <pre><code>{{ marc_result }}</code></pre>
+    </div>
+    {% endif %}
+
+</body>
+</html>
